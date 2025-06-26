@@ -2,6 +2,7 @@
 using IssueTrackerAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IssueTrackerAPI.Controllers
 {
@@ -27,12 +28,34 @@ namespace IssueTrackerAPI.Controllers
                 //Status = ticketDto.Status,
                 //AssignedTo = ticketDto.AssignedTo,
                 AssignedToId= ticketDto.AssignedToId??0,
-                ProjectId = ticketDto.ProjectId
+                ProjectId = ticketDto.ProjectId,
+                Status = "ToDo", // Default status
             };
 
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
             return Ok(ticket);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTicket(int id)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.AssignedTo)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (ticket == null) return NotFound();
+
+            var response = new TicketResponseDTO
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Status = ticket.Status,
+                ProjectName = ticket?.Project?.Name,
+                AssignedToEmail = ticket?.AssignedTo?.Email
+            };
+
+            return Ok(response);
         }
         [Authorize(Roles = "admin,developer")] // 👈 Apply here
         [HttpPatch("assign/{id}")]
