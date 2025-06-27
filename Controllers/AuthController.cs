@@ -4,7 +4,8 @@ using IssueTrackerAPI.DTOs;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text; //Encoding
+using System.Text;
+using IssueTrackerAPI.Models; //Encoding
 //using BCrypt.Net-Next; - forbcrypt
 
 
