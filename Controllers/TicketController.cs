@@ -57,6 +57,48 @@ namespace IssueTrackerAPI.Controllers
 
             return Ok(response);
         }
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> GetTicketByProject(int projectId)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.AssignedTo)
+                .FirstOrDefaultAsync(t => t.ProjectId == projectId);
+
+            if (ticket == null) return NotFound();
+
+            var response = new TicketResponseDTO
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Status = ticket.Status,
+                ProjectName = ticket?.Project?.Name,
+                AssignedToEmail = ticket?.AssignedTo?.Email
+            };
+
+            return Ok(response);
+        }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetTicketByUser(int userId)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.AssignedTo)
+                .FirstOrDefaultAsync(t => t.AssignedToId == userId);
+
+            if (ticket == null) return NotFound();
+
+            var response = new TicketResponseDTO
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Status = ticket.Status,
+                ProjectName = ticket?.Project?.Name,
+                AssignedToEmail = ticket?.AssignedTo?.Email
+            };
+
+            return Ok(response);
+        }
         [Authorize(Roles = "admin,developer")] // 👈 Apply here
         [HttpPatch("assign/{id}")]
         public async Task<IActionResult> UpdateTickets(TicketDTO ticketDto, int id)
