@@ -16,7 +16,8 @@ public class ProjectController : ControllerBase
     }
 
     [Authorize(Roles = "admin")] // 👈 Apply here
-    [HttpPost("create")]
+    //[HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create(ProjectDTO projectDto)
     {
         var project = new Project

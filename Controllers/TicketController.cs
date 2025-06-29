@@ -59,18 +59,31 @@ namespace IssueTrackerAPI.Controllers
         }
         [Authorize(Roles = "admin,developer")] // 👈 Apply here
         [HttpPatch("assign/{id}")]
-        public async Task<IActionResult> UpdateTickets(TicketCreateDTO ticketDto)
+        public async Task<IActionResult> UpdateTickets(TicketDTO ticketDto, int id)
         {
-            return null; // Placeholder for the actual implementation
+            var ticket = await _context.Tickets.FindAsync(ticketDto.Id);
+            if (ticket == null)
+                return NotFound("Ticket not found.");
+
+            var assignToUser = await _context.Users.FindAsync(id);
+
+            if (assignToUser == null)
+                return BadRequest("User not found.");
+            ticket.AssignedTo = assignToUser;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(ticket);
         }
-        [HttpPatch("assign/{id}")]
+        [HttpGet("assign/{id}")]
         public async Task<IActionResult> AssignedToMe()
         {
-            return _context.Tickets.Where(x => x.AssignedTo == HttpContext.User.Identity.Name).ToList() switch
+            return _context.Tickets.Where(x => x.AssignedTo.Name == HttpContext.User.Identity.Name).ToList() switch
             {
                 var tickets when tickets.Any() => Ok(tickets),
                 _ => NotFound("No tickets assigned to you.")
             };
         }
+
     }
 }
