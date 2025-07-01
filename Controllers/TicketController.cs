@@ -160,12 +160,12 @@ namespace IssueTrackerAPI.Controllers
         [HttpGet("{ticketId}/comments")]
         public async Task<IActionResult> GetCommentsForTicket([FromRoute] int ticketId)
         {
-            var ticket = await _context.Tickets
-                .Include(t => t.Comments)
+            var ticketComment = await _context.TicketComments
+                //.Include(t => t.Comments)
                 .FirstOrDefaultAsync(t => t.Id == ticketId);
-            if (ticket == null)
+            if (ticketComment == null)
                 return NotFound("Ticket not found.");
-            return Ok(ticket.Comments);
+            return Ok(ticketComment);
         }
         [HttpGet("?status={status}&assignedTo={userId}&projectId={projectId}")]
         public async Task<IActionResult> GetReqTickets([FromRoute] string status, [FromRoute] int userId, [FromRoute] int projectId)
