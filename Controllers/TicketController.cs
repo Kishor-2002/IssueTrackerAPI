@@ -12,7 +12,6 @@ namespace IssueTrackerAPI.Controllers
     public class TicketController : ControllerBase
     {
         private readonly AppDbContext _context;
-
         public TicketController(AppDbContext context)
         {
             _context = context;
@@ -38,7 +37,7 @@ namespace IssueTrackerAPI.Controllers
             return Ok(ticket);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTicket(int id)
+        public async Task<IActionResult> GetTicketById(int id)
         {
             var ticket = await _context.Tickets
                 .Include(t => t.Project)

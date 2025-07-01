@@ -1,1 +1,20 @@
 # IssueTrackerAPI
+	- DTO
+		-- ProjectDTO > Project details
+		--TickeDTO > Ticket details
+		--UserDTO > User details
+		--ProjectCreateDTO > Project creation details
+		--ProjectResponse > Project Response details
+		--TicketCreateDTO > Ticket creation details
+		--TicketResponse > Ticket Response details
+		--TicketSummaryDTO > Ticket summary details
+	-Models
+		-- Project > Project model (Name, Tickets)
+		-- Ticket > Ticket model (Title, Description, Status, AssignedTo, Project, Comment)
+		-- User > User model (Name, Email, Password, Role)
+		-- TicketComment > Ticket comment model (TicketId, Content, Author, CreatedTime)
+	-Dashboard
+		-- DashboardController > (Total Tickets, Total Opened, Total Closed, Assigned to Me Tickets)
+		-- AuthController > (Register, Login, CreateJWTToken)
+		-- ProjectController > (Create Project, GetTickets under Project, Get all projects)
+		-- TicketController > (Create Ticket, Get By Id, Get by Project, Get by Assignee, Update Status, Add Comments, Get by filters)
