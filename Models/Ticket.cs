@@ -10,5 +10,6 @@ namespace IssueTrackerAPI.Models
         public int AssignedToId { get; set; }
         public Project Project { get; set; } 
         public int ProjectId { get; set; } // Assuming a Ticket belongs to a Project
+        public List<TicketComment> Comments { get; set; }
     }
 }

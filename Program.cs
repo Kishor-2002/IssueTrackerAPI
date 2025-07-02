@@ -1,3 +1,4 @@
+using IssueTrackerAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,6 +28,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = new DataSeeder(scope.ServiceProvider.GetRequiredService<AppDbContext>());
+    seeder.Seed();
+}
+
 
 app.UseAuthentication();
 app.UseAuthorization();
