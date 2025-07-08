@@ -58,23 +58,48 @@ namespace IssueTrackerAPI.Controllers
             return Ok(response);
         }
         [HttpGet("{projectId}")]
-        public async Task<IActionResult> GetTicketByProject(int projectId)
+        //public async Task<IActionResult> GetTicketByProject(int projectId)
+        //{
+        //    var ticket = await _context.Tickets
+        //        .Include(t => t.Project)
+        //        .Include(t => t.AssignedTo)
+        //        .FirstOrDefaultAsync(t => t.ProjectId == projectId);
+
+        //    if (ticket == null) return NotFound();
+
+        //    var response = new TicketResponseDTO
+        //    {
+        //        Id = ticket.Id,
+        //        Title = ticket.Title,
+        //        Status = ticket.Status,
+        //        ProjectName = ticket?.Project?.Name,
+        //        AssignedToEmail = ticket?.AssignedTo?.Email
+        //    };
+
+        //    return Ok(response);
+        //}
+
+        [Authorize]
+        [HttpGet("{projectId}/tickets")]
+        public async Task<IActionResult> GetTicketsByProject(int projectId)
         {
-            var ticket = await _context.Tickets
+            var tickets = await _context.Tickets
+                .Where(t => t.ProjectId == projectId)
                 .Include(t => t.Project)
                 .Include(t => t.AssignedTo)
-                .FirstOrDefaultAsync(t => t.ProjectId == projectId);
+                .ToListAsync();
 
-            if (ticket == null) return NotFound();
+            if (tickets.Count == 0)
+                return NotFound("No tickets found for this project");
 
-            var response = new TicketResponseDTO
+            var response = tickets.Select(t => new TicketResponseDTO
             {
-                Id = ticket.Id,
-                Title = ticket.Title,
-                Status = ticket.Status,
-                ProjectName = ticket?.Project?.Name,
-                AssignedToEmail = ticket?.AssignedTo?.Email
-            };
+                Id = t.Id,
+                Title = t.Title,
+                Status = t.Status,
+                ProjectName = t.Project?.Name,
+                AssignedToEmail = t.AssignedTo?.Email
+            });
 
             return Ok(response);
         }
